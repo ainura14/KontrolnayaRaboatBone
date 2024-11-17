@@ -8,68 +8,107 @@ public class Main {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        int[] predictedNumberComputer = new int[3];
+        int[] computerSumBones = new int[3];
+        int[] resultComputerBone = new int[3];
+        int[] predictedNumberUser = new int[3];
+        int[] userSumBones = new int[3];
+        int[] resultUserBone = new int[3];
+        int totalUserResult = 0, totalComputerResult = 0, totalRU = 0, totalRC = 0;
 
-        for (int i = 1; i < 4; i++) {
+        for (int i = 0; i < 3; i++) {
             System.out.println("---        Start game           ---");
             System.out.println("Predict amount of points (2..12): ");
-            int predictedNumberUser = scanner.nextInt();
+            predictedNumberUser[i] = scanner.nextInt();
 
             int userBone1 = rollTheDice();
             int userBone2 = rollTheDice();
-            int userSumBones = userBone1 + userBone2;
+            userSumBones[i] = userBone1 + userBone2;
 
             System.out.println("User rolls the dices...");
 
             printDice(userBone1);
-            System.out.println("*****************");
+            System.out.println();
             printDice(userBone2);
 
-            System.out.println("On the dice fell " + userSumBones + " points.");
+            resultUserBone[i] = userSumBones[i] - Math.abs(userSumBones[i] - predictedNumberUser[i]) * 2;
+            System.out.println("On the dice fell " + userSumBones[i] + " points.");
+            System.out.println("Result is " + userSumBones[i] + " - abs(" + userSumBones[i] + " - " + predictedNumberUser[i] + ") * 2: " + resultUserBone[i] + " points.");
 
-            int resultUserBone = userSumBones - Math.abs(userSumBones - predictedNumberUser) * 2;
-            System.out.println("Result is " + userSumBones + " - abs(" + userSumBones + " - " + predictedNumberUser + ") * 2: " + resultUserBone + " points.");
+            for (int j = i; j < 3; j++) {
 
-            for (int j = i; j < 4; j++) {
-
-                int predictedNumberComputer = random.nextInt(2, 13);
+                predictedNumberComputer[j] = random.nextInt(2, 13);
 
                 int computerBone1 = rollTheDice();
                 int computerBone2 = rollTheDice();
 
-                int computerSumBones = computerBone1 + computerBone2;
+                computerSumBones[j] = computerBone1 + computerBone2;
 
                 System.out.println();
 
-                System.out.println("Computer predicted " + predictedNumberComputer + " points.");
+                System.out.println("Computer predicted " + predictedNumberComputer[j] + " points.");
                 System.out.println("Computer rolls the dices...");
 
                 printDice(computerBone1);
                 printDice((computerBone2));
 
-                int resultComputerBone = computerSumBones - Math.abs(computerSumBones - predictedNumberComputer) * 2;
+                resultComputerBone[j] = computerSumBones[j] - Math.abs(computerSumBones[j] - predictedNumberComputer[j]) * 2;
 
-                System.out.println("On the dice fell " + computerSumBones + " points.");
-                System.out.println("Result is " + computerSumBones + " - abs( " + computerSumBones + " - " + predictedNumberComputer + ") * 2: " + resultComputerBone + " points.");
+                System.out.println("On the dice fell " + computerSumBones[j] + " points.");
+                System.out.println("Result is " + computerSumBones[j] + " - abs( " + computerSumBones[j] + " - " + predictedNumberComputer[j] + ") * 2: " + resultComputerBone[j] + " points.");
 
-                System.out.println("------------ " + j + " - stage result --------------");
-                if(resultUserBone > resultComputerBone){
-                    int differenceUser =resultUserBone - resultComputerBone;
-                    System.out.println("User win " + differenceUser + " points more." + "\n" + "Congratulations!");
-                }else if(resultComputerBone > resultUserBone){
-                    int differenceComputer = resultComputerBone - resultUserBone;
-                    System.out.println("Computer win " + differenceComputer + " points more." + "\n" + "Congratulations!");
+                System.out.println("------------ " + "Current score" + "--------------");
+                System.out.println("User: " + resultUserBone[i] + " points");
+                System.out.println("Computer: " + resultComputerBone[j] + " points");
+                if(resultUserBone[i] > resultComputerBone[j]){
+                    int differenceUser =resultUserBone[i] - resultComputerBone[j];
+                    System.out.println("User is ahead by " + differenceUser + " points!");
+                }else if(resultComputerBone[j] > resultUserBone[i]){
+                    int differenceComputer = resultComputerBone[j] - resultUserBone[i];
+                    System.out.println("Computer is ahead by " + differenceComputer + " points!");
                 } else if (resultUserBone == resultComputerBone) {
                     System.out.println("Draw in the game.");
                 }
+                totalUserResult += resultUserBone[i];
+                totalComputerResult += resultComputerBone[j];
                 break;
             }
+            System.out.println("--------------------------------------------------");
         }
+        System.out.printf("""
+               ------------- Finish game --------------------
+                   Round |      User    |    Computer 
+                 --------+-----------+-------------
+                         | Predicted: %d| Predicted: %d
+                   - 1 - | Dice: %d     | Dice:%d
+                         | Result: %d   | Result: %d
+                """, predictedNumberUser[0], predictedNumberComputer[0], userSumBones[0], computerSumBones[0], resultUserBone[0], resultComputerBone[0]);
+        System.out.printf(""" 
+                   --------+-----------+-------------
+                           | Predicted: %d| Predicted: %d
+                    - 2 -  | Dice: %d     | Dice:%d
+                           | Result: %d   | Result: %d
+                        """, predictedNumberUser[1], predictedNumberComputer[1], userSumBones[1], computerSumBones[1], resultUserBone[1], resultComputerBone[1]);
+        System.out.printf("""   
+                  --------+-----------+-------------
+                          | Predicted: %d| Predicted: %d
+                   - 3 -  | Dice: %d     | Dice:%d
+                          | Result: %d   | Result: %d
+                       """, predictedNumberUser[2], predictedNumberComputer[2], userSumBones[2], computerSumBones[2], resultUserBone[2], resultComputerBone[2]);
+        System.out.printf("""
+                 --------+-----------+-------------
+                 Total   | Points: %d    | Points: %d
+                """, totalUserResult, totalComputerResult);
 
-//        if (resultUserBone > 0){
-//            System.out.println("User wins!");
-//        }else {
-//            System.out.println("User can't predicted the bone.");
-//        }
+        if(totalUserResult > totalComputerResult){
+            totalRU = totalUserResult - totalComputerResult;
+            System.out.println("Users win " + totalRU   + " points more. Congratulations!" );
+        }else if(totalUserResult < totalComputerResult){
+            totalRC = totalComputerResult - totalUserResult;
+            System.out.println("Computers win " + totalRC+ " points more. Congratulations!" );
+        }else{
+            System.out.println("Draw in the game.");
+        }
     }
 
     public static int rollTheDice(){
